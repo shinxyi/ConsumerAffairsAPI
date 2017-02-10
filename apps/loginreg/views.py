@@ -54,3 +54,13 @@ def login(request):
         return response
     else:
         return HttpResponse('Please submit a POST request...')
+
+@csrf_exempt
+def test(request, uuid):
+    response = HttpResponse()
+    user = User.userManager.filter(auth_token=uuid)
+    if len(user)<1:
+        response.write('Invalid Authentication Token.')
+    else:
+        response.write(str(user[0].first_name))
+    return response
