@@ -15,3 +15,4 @@ class Company(models.Model):
     created_by = models.ForeignKey(User, blank=True, null=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
+    active = models.BooleanField(default=True)
