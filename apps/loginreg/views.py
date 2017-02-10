@@ -8,32 +8,34 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def register(request):
     if request.method == "POST":
-        print '***'
-        print request.POST
-        print request.POST['first_name']
         response = HttpResponse()
-        user = User.userManager.register(
-            request.POST.get('username', False),
-            request.POST.get('first_name', False),
-            request.POST.get('last_name', False),
-            request.POST.get('email', False),
-            request.POST.get('password', False),
-            request.POST.get('confirm_password', False)
-            )
-        if 'error' in user:
-            return HttpResponse('Passwords do not match.')
         bound_form = RegisterForm(request.POST)
         if bound_form.is_valid():
+            user = User.userManager.register(
+                request.POST['username'],
+                request.POST['first_name'],
+                request.POST['last_name'],
+                request.POST['email'],
+                request.POST['password'],
+                request.POST['confirm_password']
+                )
+            if 'error' in user:
+                return HttpResponse('Passwords do not match.')
             user = user['user']
-            # user = User.userManager.create(username=user['username'],first_name= user['first_name'], last_name= user['last_name'], email= user['email'], password= user['password'])
-            user = User.userManager.create(user)
+            user = User.userManager.create(
+                username=user['username'],
+                first_name= user['first_name'],
+                last_name= user['last_name'],
+                email= user['email'],
+                password= user['password'],
+                auth_token= user['auth_token']
+                )
             user.save()
-            print user.id
-            response['user'] = user
+            response.write(str(user.auth_token))
         else:
             print bound_form.errors
             for key in bound_form.errors:
-                response[key] = bound_form.errors[key]
+                response.write(str(key) + str(bound_form.errors[key]))
         return response
     else:
         return HttpResponse('Please submit a POST request...')

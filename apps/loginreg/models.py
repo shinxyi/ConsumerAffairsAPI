@@ -6,8 +6,7 @@ import re, bcrypt, uuid
 class UserManager(models.Manager):
     def register(self, username, first_name, last_name, email, password, confirm_password):
         if password != confirm_password:
-            raise ValidationError('Passwords do not match.')
-            return {'error': 'Passwords do not match!'}
+            return {'error': 'Password match error.'}
         else:
             pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
             user = {
@@ -64,6 +63,6 @@ class User(models.Model):
     password=models.CharField(max_length=100, validators = [validatePasswordLength])
     confirm_password=models.CharField(max_length=100)
     active = models.BooleanField(default=True)
-    auth_token= models.CharField(max_length=100)
+    auth_token= models.CharField(max_length=100, unique=True)
 
     userManager = UserManager()
