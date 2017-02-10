@@ -1,7 +1,6 @@
 from django import forms
 from .models import User
 from django.core.exceptions import ValidationError
-import bcrypt
 
 class RegisterForm(forms.ModelForm):
     class Meta:
