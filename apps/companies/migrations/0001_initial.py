@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('location', models.CharField(max_length=100)),
                 ('industry', models.CharField(max_length=45)),
                 ('current_status', models.CharField(max_length=20)),
-                ('website', models.CharField(max_length=100, validators=[apps.companies.models.validateUrl])),
+                ('website', models.CharField(max_length=100)),
                 ('service_description', models.TextField(max_length=10000)),
                 ('created_at', models.DateField(auto_now_add=True)),
                 ('updated_at', models.DateField(auto_now=True)),
