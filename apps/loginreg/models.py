@@ -66,5 +66,7 @@ class User(models.Model):
     confirm_password=models.CharField(max_length=100)
     active = models.BooleanField(default=True)
     auth_token= models.CharField(max_length=100, unique=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
     userManager = UserManager()
