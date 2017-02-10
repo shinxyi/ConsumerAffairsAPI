@@ -39,3 +39,18 @@ def register(request):
         return response
     else:
         return HttpResponse('Please submit a POST request...')
+
+@csrf_exempt
+def login(request):
+    if request.method == "POST":
+        response = HttpResponse()
+        user = User.userManager.login(request.POST['email'],request.POST['password'])
+        if 'errors' in user:
+            print user['errors']
+            for error in user['errors']:
+                response.write(error)
+        else:
+            response.write(user['user'])
+        return response
+    else:
+        return HttpResponse('Please submit a POST request...')

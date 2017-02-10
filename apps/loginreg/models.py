@@ -19,25 +19,27 @@ class UserManager(models.Manager):
             }
             return {'user': user}
 
-    # def login(self, email, password):
-    #     valid=True
-    #     errors=[]
-    #     pattern = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-    #
-    #     if len(email) < 1:
-    #         errors.append("Email field cannot be empty!")
-    #         valid=False
-    #     elif not pattern.match(email):
-    #         errors.append("Invalid Email Format!")
-    #         valid=False
-    #
-    #     user = User.userManager.filter(email=email)
-    #     if len(user)<1:
-    #         errors.append("Invalid Email")
-    #         valid=False
-    #     elif bcrypt.hashpw(password.encode(), user[0].password.encode()) == user[0].password.encode():
-    #         return {'user': user[0]}
-    #     return {'errors': errors }
+    def login(self, email, password):
+        valid=True
+        errors=[]
+        pattern = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+
+        if len(email) < 1:
+            errors.append("Email field cannot be empty!")
+            valid=False
+        elif not pattern.match(email):
+            errors.append("Invalid Email Format!")
+            valid=False
+
+        user = User.userManager.filter(email=email)
+        if len(user)<1:
+            errors.append("Invalid Email")
+            valid=False
+        elif bcrypt.hashpw(password.encode(), user[0].password.encode()) == user[0].password.encode():
+            return {'user': user[0].auth_token}
+        else:
+            errors.append("Invalid email/password combination.")
+        return {'errors': errors }
 
 def validateName(value):
     if len(value)< 3:
