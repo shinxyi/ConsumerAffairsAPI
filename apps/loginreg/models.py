@@ -64,9 +64,9 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     password=models.CharField(max_length=100, validators = [validatePasswordLength])
     confirm_password=models.CharField(max_length=100)
-    active = models.BooleanField(default=True)
     auth_token= models.CharField(max_length=100, unique=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
+    active = models.BooleanField(default=True)
 
     userManager = UserManager()
