@@ -1,0 +1,326 @@
+info:
+  title: ConsumerAffairsAPI
+  description: Database for customer reviews of different companies.
+  version: "1.0.0"
+host: n/a
+schemes:
+  - http
+paths:
+  /admin/:
+    get:
+      summary: Admin Dashboard
+      description: |
+        Admin can log in to quickly and easily view stored database information on User,
+        Company, and Review objects.
+      tags:
+        - Admin
+      responses:
+        200:
+          description: Admin dashboard view with access to all User, Company, and Review objects.
+  /users/register:
+    post:
+      summary: Registers a new user
+      description: |
+        Allows a new user to register for an authenticity token to access the rest of the API.
+      parameters:
+        - name: username
+          in: query
+          description: Username
+          required: true
+          type: CharField
+          max_length: 45
+          unique: True
+        - name: first_name
+          in: query
+          description: First name
+          required: true
+          type: CharField
+          max_length: 45
+          min_length: 2
+        - name: last_name
+          in: query
+          description: Last name
+          required: true
+          type: CharField
+          max_length: 45
+          min_length: 2
+        - name: email
+          in: query
+          description: Email
+          required: true
+          type: EmailField
+          unique: True
+        - name: password
+          in: query
+          description: Password
+          required: true
+          type: CharField
+          max_length: 100
+          min_length: 8
+        - name: confirm_password
+          in: query
+          description: Password match
+          required: true
+          type: CharField
+          max_length: 100
+      tags:
+        - Users
+      responses:
+        200:
+          description: UUID authenticity token
+          schema:
+            type: string
+        default:
+          description: Error / Form Validation Failure
+  /users/login:
+    get:
+      summary: Login
+      description: Returns authenticity token of user who logs in with registered information.
+      parameters:
+        - name: email
+          in: query
+          description: Email
+          required: true
+          type: CharField
+        - name: password
+          in: query
+          description: Password
+          required: true
+          type: CharField
+      tags:
+        - Users
+      responses:
+        200:
+          description: UUID authenticity token
+          schema:
+            type: string
+        default:
+          description: Error / Form Validation Failure
+  /companies/create/auth=<uuid>/:
+    post:
+      summary: Create a company
+      description: Users can create a company to review.
+      parameters:
+        - name: name
+          in: query
+          description: Company name
+          required: true
+          type: CharField
+          max_length: 100
+          unique: True
+        - name: industry
+          in: query
+          description: Company industry
+          required: true
+          type: CharField
+          max_length: 100
+        - name: current_status
+          in: query
+          description: Active/Inactive/Etc.
+          required: true
+          type: CharField
+          max_length: 45
+        - name: website
+          in: query
+          description: Company website
+          type: CharField
+          max_length: 100
+        - name: service_description
+          in: query
+          description: What does the company do?
+          required: true
+          type: TextField
+          max_length: 10000
+        - name: uuid
+          in: query
+          description: User who created the company (inserted into created company object).
+          type: string
+          required: true
+      tags:
+        - Companies
+      responses:
+        200:
+          description: Thank you message.
+        default:
+          description: Error / Form Validation Failure
+  /companies/index/auth=<uuid>/:
+    get:
+      summary: Index all companies.
+      description: Returns all companies in database that can be reviewed.
+      parameters:
+        - name: uuid
+          in: query
+          description: User authenticity token
+      tags:
+        - Companies
+      responses:
+        200:
+          description: Array of all company objects.
+        default:
+          description: Error / Invalid authenticity token.
+  /companies/company=<company_name>/auth=<uuid>/:
+    get:
+      summary: Gets one company.
+      description: Returns one company from database by exact match of name.
+      parameters:
+        - name: uuid
+          in: query
+          description: User authenticity token
+        - name: company_name
+          in: query
+          description: Name of company in question.
+      tags:
+        - Companies
+      responses:
+        200:
+          description: Company object returned from successful match.
+        default:
+          description: Error / Invalid authenticity token or no matching company found.
+  /reviews/create/company=<company_id>/auth=<uuid>/:
+    post:
+      summary: Create review.
+      description: Users can create a review for a company via the company's id.
+      parameters:
+        - name: uuid
+          in: query
+          description: User authenticity token
+        - name: company_id
+          in: query
+          description: Id of company being reviewed.
+        - name: title
+          in: query
+          description: Title of review.
+          type: CharField
+          required: true
+          max_length: 64
+        - name: rating
+          in: query
+          description: Rating of review
+          type: PositiveIntegerField
+          required: true
+          range: 1-5
+        - name: summary
+          in: query
+          description: Summary of review
+          type: TextField
+          required: true
+          max_length: 10000
+      tags:
+        - Reviews
+      responses:
+        200:
+          description: Thank you message.
+        default:
+          description: Error / Invalid authenticity token or no matching company found.
+  /reviews/index/auth=<uuid>/:
+    get:
+      summary: Gets reviews of users.
+      description: Returns an array of review objects created by user.
+      parameters:
+        - name: uuid
+          in: query
+          description: User authenticity token
+      tags:
+        - Reviews
+      responses:
+        200:
+          description: Array of user specific review objects.
+        default:
+          description: Error / Invalid authenticity token.
+definitions:
+  User:
+    type: object
+    properties:
+      username:
+        type: CharField
+        description: Unique identifier representing a specific user.
+      first_name:
+        type: CharField
+        description: First name of user.
+      last_name:
+        type: CharField
+        description: Last name of user.
+      email:
+        type: EmailField
+        description: Unique identifier representing a specific user used for login.
+      password:
+        type: CharField
+        description: Used for login. Hashed password is stored in database.
+      confirm_password:
+        type: CharField
+        description: Used for helping users confirm their password upon registration.
+      auth_token:
+        type: CharField
+        description: Returned to User upon successful registration/login to allow them access to rest of API.
+      created_at:
+        type: DateTimeField
+        description: Denotes date and time of user creation.
+      updated_at:
+        type: DateTimeField
+        description: Denotes date and time of user information update.
+      active:
+        type: BooleanField
+        Description: Active status of User (vs. "deleted/inactive" in database).
+  Company:
+    type: object
+    properties:
+      name:
+        type: CharField
+        description: Unique identifier representing a specific company.
+      location:
+        type: CharField
+        description: Physical location of company headquarters.
+      industry:
+        type: CharField
+        description: Type of industry this company is in.
+      current_status:
+        type: CharField
+        description: Current status of the company in the industry (i.e. Active).
+      website:
+        type: CharField
+        description: Website of given company.
+      service_description:
+        type: CharField
+        description: Describes what the company does.
+      created_by:
+        type: Object/ForeignKey
+        description: User object of the user who created the company.
+      created_at:
+        type: DateTimeField
+        description: Denotes date and time of company creation.
+      updated_at:
+        type: DateTimeField
+        description: Denotes date and time of company information update.
+      active:
+        type: BooleanField
+        Description: Active status of Company (vs. "deleted/inactive" in database).
+  Review:
+    type: object
+    properties:
+      title:
+        type: CharField
+        description: Title of the review.
+      rating:
+        type: PositiveIntegerField
+        description: Rating of a company between 1-5.
+      summary:
+        type: TextField
+        description: The actual review.
+      ip_address:
+        type: GenericIPAddressField
+        description: Ip address of where the review was submitted from.
+      user:
+        type: object/ForeignKey
+        description: User object of the user who submitted the review.
+      company:
+        type: object/ForeignKey
+        description: Company object of the company which the review was submitted for.
+      created_at:
+        type: DateTimeField
+        description: Denotes date and time of review creation.
+      updated_at:
+        type: DateTimeField
+        description: Denotes date and time of review information update.
+      active:
+        type: BooleanField
+        Description: Active status of Review (vs. "deleted/inactive" in database).

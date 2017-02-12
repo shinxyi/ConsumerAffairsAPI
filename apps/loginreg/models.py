@@ -58,11 +58,11 @@ def validatePasswordLength(value):
           )
 
 class User(models.Model):
-    username = models.CharField(max_length=45,unique=True)
-    first_name = models.CharField(max_length=45, validators = [validateName])
-    last_name = models.CharField(max_length=45, validators = [validateName])
-    email = models.EmailField(unique=True)
-    password=models.CharField(max_length=100, validators = [validatePasswordLength])
+    username = models.CharField(max_length=45, blank=False, unique=True)
+    first_name = models.CharField(max_length=45, blank=False, validators = [validateName])
+    last_name = models.CharField(max_length=45, blank=False, blank=False, validators = [validateName])
+    email = models.EmailField(blank=False, unique=True)
+    password=models.CharField(max_length=100, blank=False, validators = [validatePasswordLength])
     confirm_password=models.CharField(max_length=100)
     auth_token= models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(default=datetime.datetime.now(), blank=True)
