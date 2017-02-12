@@ -12,12 +12,12 @@ def register(request):
         bound_form = RegisterForm(request.POST)
         if bound_form.is_valid():
             user = User.userManager.register(
-                request.POST['username'],
-                request.POST['first_name'],
-                request.POST['last_name'],
-                request.POST['email'],
-                request.POST['password'],
-                request.POST['confirm_password']
+                bound_form.cleaned_data['username'],
+                bound_form.cleaned_data['first_name'],
+                bound_form.cleaned_data['last_name'],
+                bound_form.cleaned_data['email'],
+                bound_form.cleaned_data['password'],
+                bound_form.cleaned_data['confirm_password']
                 )
             if 'error' in user:
                 return HttpResponse('Passwords do not match.')

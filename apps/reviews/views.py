@@ -52,6 +52,7 @@ def index(request, uuid):
         return response
     reviews = Review.objects.filter(user=user)
     for review in reviews:
+        response.write('Date/Time: {} \n'.format(str(review.created_at)))
         response.write('Title: {} \n'.format(str(review.title)))
         response.write('Rating: {}\n'.format(str(review.rating)))
         response.write('Summary: {}\n'.format(str(review.summary)))
