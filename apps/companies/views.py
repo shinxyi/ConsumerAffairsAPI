@@ -44,6 +44,7 @@ def index(request, uuid):
         return response
     companies = Company.objects.all()
     for company in companies:
+        response.write('Id: {} \n'.format(str(company.id)))
         response.write('Name: {} \n'.format(str(company.name)))
         response.write('Location: {}\n'.format(str(company.location)))
         response.write('Industry: {}\n'.format(str(company.industry)))
