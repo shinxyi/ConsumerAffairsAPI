@@ -65,7 +65,7 @@ class User(models.Model):
     password=models.CharField(max_length=100, validators = [validatePasswordLength])
     confirm_password=models.CharField(max_length=100)
     auth_token= models.CharField(max_length=100, unique=True)
-    created_at = models.DateTimeField(default=datetime.datetime.now())
+    created_at = models.DateTimeField(default=datetime.datetime.now(), blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
 

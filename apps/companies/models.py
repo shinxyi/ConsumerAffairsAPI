@@ -13,6 +13,6 @@ class Company(models.Model):
     website = models.CharField(max_length=100, blank=True)
     service_description=models.TextField(max_length=10000, blank=False)
     created_by = models.ForeignKey(User, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.datetime.now())
+    created_at = models.DateTimeField(default=datetime.datetime.now(), blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)

@@ -18,6 +18,6 @@ class Review(models.Model):
     ip_address = models.GenericIPAddressField()
     user = models.ForeignKey(User)
     company = models.ForeignKey(Company)
-    created_at = models.DateTimeField(default=datetime.datetime.now())
+    created_at = models.DateTimeField(default=datetime.datetime.now(), blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
