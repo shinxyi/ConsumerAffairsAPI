@@ -26,9 +26,9 @@ def create(request, company_id, uuid):
         bound_form = ReviewCreationForm(request.POST)
         if bound_form.is_valid():
             review = Review.objects.create(
-                title=request.POST['title'],
-                rating=request.POST['rating'],
-                summary=request.POST['summary'],
+                title=bound_form.cleaned_data['title'],
+                rating=bound_form.cleaned_data['rating'],
+                summary=bound_form.cleaned_data['summary'],
                 ip_address= get_ip(request),
                 user=user,
                 company=company
@@ -52,7 +52,6 @@ def index(request, uuid):
         return response
     reviews = Review.objects.filter(user=user)
     for review in reviews:
-        response.write('Date/Time: {} \n'.format(str(review.created_at)))
         response.write('Title: {} \n'.format(str(review.title)))
         response.write('Rating: {}\n'.format(str(review.rating)))
         response.write('Summary: {}\n'.format(str(review.summary)))

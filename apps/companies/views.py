@@ -17,12 +17,12 @@ def create(request, uuid):
         bound_form = CompanyCreationForm(request.POST)
         if bound_form.is_valid():
             company = Company.objects.create(
-                name=request.POST['name'],
-                location=request.POST['location'],
-                industry=request.POST['industry'],
-                current_status=request.POST['current_status'],
-                website=request.POST['website'],
-                service_description=request.POST['service_description'],
+                name=bound_form.cleaned_data['name'],
+                location=bound_form.cleaned_data['location'],
+                industry=bound_form.cleaned_data['industry'],
+                current_status=bound_form.cleaned_data['current_status'],
+                website=bound_form.cleaned_data['website'],
+                service_description=bound_form.cleaned_data['service_description'],
                 created_by = user
                 )
             company.save()
